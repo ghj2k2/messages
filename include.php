@@ -16,7 +16,7 @@ Class CLartoMessanger
 			"text" => GetMessage($MODULE_ID."_MODULE_NAME"),
 			"title" => '',
 //			"url" => "partner_modules.php?module=".$MODULE_ID,
-			"icon" => "",
+			"icon" => "main_messanger_style",
 			"page_icon" => "",
 			"items_id" => $MODULE_ID."_items",
 			"more_url" => array(),
@@ -42,13 +42,14 @@ Class CLartoMessanger
 
 				sort($arFiles);
 
-				foreach($arFiles as $item)
+				foreach($arFiles as $item) {
 					$aMenu['items'][] = array(
-						'text' => $item,
+						'text' => GetMessage($item.'_FILE_TITLE'),
 						'url' => $MODULE_ID.'_'.$item,
 						'module_id' => $MODULE_ID,
-						"title" => "",
+						"title" => GetMessage($item.'_FILE_TITLE'),
 					);
+				}
 			}
 		}
 		$aModuleMenu[] = $aMenu;

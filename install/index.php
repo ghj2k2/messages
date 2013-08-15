@@ -26,13 +26,32 @@ Class larto_messanger extends CModule
 
 	function InstallDB($arParams = array())
 	{
-		RegisterModuleDependences('main', 'OnBuildGlobalMenu', self::MODULE_ID, 'CLartoMessanger', 'OnBuildGlobalMenu');
-		return true;
+		global $DB, $DBType, $APPLICATION;
+		$this->errors = false;
+		$this->errors = $DB->RunSQLBatch($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".self::MODULE_ID."/install/db/".strtolower($DB->type)."/install.sql");
+		if($this->errors !== false)
+		{
+			$APPLICATION->ThrowException(implode("<br>", $this->errors));
+			return false;
+		}
+		else
+		{
+			RegisterModuleDependences('main', 'OnBuildGlobalMenu', self::MODULE_ID, 'CLartoMessanger', 'OnBuildGlobalMenu');
+			return true;
+		}
 	}
 
 	function UnInstallDB($arParams = array())
 	{
+		global $DB, $DBType, $APPLICATION;
+		$this->errors = false;
+		$this->errors = $DB->RunSQLBatch($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".self::MODULE_ID."/install/db/".strtolower($DB->type)."/uninstall.sql");
 		UnRegisterModuleDependences('main', 'OnBuildGlobalMenu', self::MODULE_ID, 'CLartoMessanger', 'OnBuildGlobalMenu');
+		if($this->errors !== false)
+		{
+			$APPLICATION->ThrowException(implode("<br>", $this->errors));
+			return false;
+		}
 		return true;
 	}
 
@@ -75,6 +94,7 @@ Class larto_messanger extends CModule
 				closedir($dir);
 			}
 		}
+		CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".self::MODULE_ID."/install/themes/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/themes", true, true);
 		return true;
 	}
 
@@ -114,6 +134,7 @@ Class larto_messanger extends CModule
 				closedir($dir);
 			}
 		}
+		DeleteDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".self::MODULE_ID."/install/themes/.default/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/themes/.default");
 		return true;
 	}
 
